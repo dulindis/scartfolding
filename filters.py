@@ -5,9 +5,11 @@ from tkinter import filedialog
 
 ### ------ Filters
 
+
 # Convert image to black and white - returns PIL img
 def apply_black_and_white(img):
     return img.convert("L")
+
 
 # Convert image to sepia - returns PIL img
 def apply_sepia(img):
@@ -19,18 +21,16 @@ def apply_sepia(img):
         for x in range(width):
             r, g, b = pixels[x, y]
 
-            tr = int(0.393*r + 0.769*g + 0.189*b)
-            tg = int(0.349*r + 0.686*g + 0.168*b)
-            tb = int(0.272*r + 0.534*g + 0.131*b)
+            tr = int(0.393 * r + 0.769 * g + 0.189 * b)
+            tg = int(0.349 * r + 0.686 * g + 0.168 * b)
+            tb = int(0.272 * r + 0.534 * g + 0.131 * b)
 
-            pixels[x, y] = (
-                min(255, tr),
-                min(255, tg),
-                min(255, tb)
-            )
+            pixels[x, y] = (min(255, tr), min(255, tg), min(255, tb))
     return sepia_img
 
+
 ### ------ Utility Functions
+
 
 # Load Image - returns PIL img
 def load_image(path_str):
@@ -42,14 +42,15 @@ def load_image(path_str):
     except Exception as e:
         raise IOError(f"Could not open image: {e}") from e
 
+
 # Save Image - returns file path where the saved image is written
 def save_image(path, suffix, output_dir=None):
-    img = load_image(path)     
+    img = load_image(path)
     path = Path(path)
 
     if not path.exists():
         raise FileNotFoundError(f"Image not found: {path}")
-    
+
     if output_dir:
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -61,6 +62,7 @@ def save_image(path, suffix, output_dir=None):
     print(f"Saved filtered image to: {out_file}")
     return out_file
 
+
 # Show Image - does not return anything; it displays a PIL image in a Tkinter window
 def show_image(img, title="Image"):
     root = tk.Tk()
@@ -70,16 +72,18 @@ def show_image(img, title="Image"):
     label.pack()
     root.mainloop()
 
-# Pick Image - returns picked file path 
+
+# Pick Image - returns picked file path
 def pick_image_file():
     root = tk.Tk()
     root.withdraw()
     file_path = filedialog.askopenfilename(
         title="Select an image",
-        filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.tiff *.gif")]
+        filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.tiff *.gif")],
     )
     root.destroy()
     return file_path if file_path else None
+
 
 def pick_output_folder():
     root = tk.Tk()
