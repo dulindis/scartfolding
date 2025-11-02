@@ -30,26 +30,26 @@ def test_filters_interactive():
         output_folder.mkdir(parents=True, exist_ok=True)
         print(f"Saving filtered images to: {output_folder}")
 
-        ### -------- Test filters
+        ## -------- Test filters
 
-        # filters = [
-        #     ("Black & White", apply_black_and_white, "_bw"),
-        #     ("Sepia", apply_sepia, "_sepia"),
-        # ]
+        filters = [
+            ("Black & White", apply_black_and_white, "_bw"),
+            ("Sepia", apply_sepia, "_sepia"),
+        ]
 
-        # for name, func, suffix in filters:
-        #     print(f"Performing action {name} ...")
-        #     transformed_img = func(img)
-        #     show_image(filtered_img, title=name)
+        for name, func, suffix in filters:
+            print(f"Performing action {name} ...")
+            filtered_img = func(img)
+            show_image(filtered_img, title=name)
 
-        #     out_path = (
-        #         output_folder
-        #         / f"{Path(image_path).stem}{suffix}{Path(image_path).suffix}"
-        #     )
-        #     transformed_img.save(out_path)
-        #     print(f"✅ Files saved under: {out_path}")
+            out_path = (
+                output_folder
+                / f"{Path(image_path).stem}{suffix}{Path(image_path).suffix}"
+            )
+            filtered_img.save(out_path)
+            print(f"✅ Files saved under: {out_path}")
 
-        # print("\n✅ All actions performed successfully.")
+        print("\n✅ All actions performed successfully.")
 
         ### -------- Test grids
 
@@ -58,7 +58,7 @@ def test_filters_interactive():
 
         print(f"Creating grid...")
         transformed_img = draw_grid(
-            img, start="center", cols=2, rows=2, line_color=(255, 0, 0), line_width=2
+            img, start="center", cols=4, rows=4, line_color=(255, 0, 0), line_width=2
         )
         show_image(transformed_img, title="Grid")
         out_path = (
