@@ -60,7 +60,8 @@ def load_image(path_str):
     if not path.exists():
         raise FileNotFoundError(f"Image not found: {path}")
     try:
-        return Image.open(path)
+        img = Image.open(path_str)
+        return img
     except Exception as e:
         raise IOError(f"Could not open image: {e}") from e
 
@@ -82,6 +83,7 @@ def save_image(path, suffix, output_dir=None):
 
     img.save(out_file)
     print(f"Saved filtered image to: {out_file}")
+    img.close()
     return out_file
 
 
@@ -89,9 +91,12 @@ def save_image(path, suffix, output_dir=None):
 def show_image(img, title="Image"):
     root = tk.Tk()
     root.title(title)
-    tk_img = ImageTk.PhotoImage(img)
+
+    tk_img = ImageTk.PhotoImage(img.copy())
     label = tk.Label(root, image=tk_img)
+    label.image = tk_img
     label.pack()
+
     root.mainloop()
 
 
@@ -107,6 +112,7 @@ def pick_image_file():
     return file_path if file_path else None
 
 
+# Pick Folder - returns picked directory path
 def pick_output_folder():
     root = tk.Tk()
     root.withdraw()  # Hide the main window
