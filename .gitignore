@@ -4,6 +4,10 @@ __pycache__/
 *$py.class
 .pytest_cache
 
+#temp files
+temp/
+
+
 # Virtual environment
 venv/
 ENV/
@@ -30,4 +34,3 @@ Thumbs.db
 # Images or other large data files (optional)
 images/
 
-comments.txt
