@@ -2,6 +2,8 @@ from PIL import Image, ImageDraw
 from typing import Tuple, Optional
 from enum import Enum
 
+### ------ Grids
+
 
 class GridStart(Enum):
     CENTER = "center"
@@ -9,6 +11,7 @@ class GridStart(Enum):
     RIGHT = "right"
 
 
+# Computes positions of lines - returns a tuple
 def compute_grid_positions(
     width: int,
     height: int,
@@ -56,6 +59,7 @@ def compute_grid_positions(
     return x_positions, y_positions
 
 
+# Draws grid over an image  -returns new PIL
 def draw_grid(
     img: Image.Image,
     start: GridStart = GridStart.CENTER,
