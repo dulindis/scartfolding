@@ -1,109 +1,63 @@
-from pathlib import Path
-import sys
-from filters import (
-    load_image,
-    apply_black_and_white,
-    apply_sepia,
-    show_image,
-    pick_image_file,
-    pick_output_folder,
-)
+import streamlit as st
+from streamlit_image_comparison import image_comparison
+
 from grids import draw_grid, GridStart
-import tkinter as tk
+from filters import apply_filter, Filters, load_image
+from utils import load_image, image_to_bytes
 
 
-# Pick an image file, apply filters, show previews, and save results.
-def test_filters_interactive():
-    try:
-        image_path = pick_image_file()
-        if not image_path:
-            print("No image selected.")
-            return
+st.title("🖼️ Image Prep App - scARTfolding")
 
-        img = load_image(image_path)
-        print(f"✅ Loaded image: {image_path}")
+uploaded = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
-        output_folder = pick_output_folder()
-        if not output_folder:
-            print("⚠️ No output folder selected, saving next to original image.")
-            output_folder = Path(image_path).parent
-        output_folder.mkdir(parents=True, exist_ok=True)
-        print(f"Saving filtered images to: {output_folder}")
+if uploaded:
+    img = load_image(uploaded)
 
-        ## -------- Test filters
+    # Filter selection
+    st.subheader("🎨 Filters")
 
-        filters = [
-            ("Black & White", apply_black_and_white, "_bw"),
-            ("Sepia", apply_sepia, "_sepia"),
-        ]
+    filter_option = st.selectbox(
+        "Choose a filter",
+        [f.value for f in Filters],
+        index=0,
+    )
 
-        for name, func, suffix in filters:
-            print(f"Performing action {name} ...")
-            filtered_img = func(img)
-            show_image(filtered_img, title=name)
+    selected_filter = next(f for f in Filters if f.value == filter_option)
 
-            out_path = (
-                output_folder
-                / f"{Path(image_path).stem}{suffix}{Path(image_path).suffix}"
-            )
-            filtered_img.save(out_path)
-            print(f"✅ Files saved under: {out_path}")
+    intensity = 0.8
+    if selected_filter == Filters.SEPIA:
+        intensity = st.slider("Sepia intensity", 0.0, 1.0, 0.8, 0.1)
 
-        print("\n✅ All actions performed successfully.")
+    filtered_img = apply_filter(img, selected_filter, intensity=intensity)
 
-        ## -------- Test grids
+    # Grid options
+    st.subheader("📐 Grid Overlay")
 
-        print(f"Creating grid...")
-        transformed_img = draw_grid(
-            img, GridStart.CENTER, cols=3, rows=5, line_color=(255, 0, 0), line_width=2
-        )
-        show_image(transformed_img, title="Grid")
-        out_path = (
-            output_folder
-            # / f"{Path(image_path).stem}{suffix}{Path(image_path).suffix}" ## with !!
-            / f"{Path(image_path).stem}_grid{Path(image_path).suffix}"
-        )
-        transformed_img.save(out_path)
-        print(f"✅ Files saved under: {out_path}")
+    start_mode = st.selectbox("Grid start", [e.value for e in GridStart])
+    start_enum = next(e for e in GridStart if e.value == start_mode)
 
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        sys.exit(1)
+    rows = st.slider("Rows", 1, 10, 3)
+    cols = st.slider("Cols", 1, 10, 3)
 
+    # Apply grid
+    img_with_grid = draw_grid(filtered_img, start=start_enum, rows=rows, cols=cols)
 
-# Fallback version for running without file picker.
-def test_filters_terminal(default_path="./images/input/landscape.jpg"):
-    try:
-        img = load_image(default_path)
-        print(f"✅ Loaded image: {default_path}")
+    st.subheader("🔍 Before vs After")
+    image_comparison(
+        img1=img,
+        img2=img_with_grid,
+        label1="Original",
+        label2="Processed",
+        width=800,
+    )
+    # Show preview - single view
+    # st.image(img_with_grid, caption="Preview", use_column_width=True)
 
-        filters = [
-            ("Black & White", apply_black_and_white, "_bw"),
-            ("Sepia", apply_sepia, "_sepia"),
-        ]
+    byte_data = image_to_bytes(img_with_grid, format="PNG")
 
-        for name, func, suffix in filters:
-            print(f"Applying {name} filter...")
-            filtered_img = func(img)
-            show_image(filtered_img, title=name)
-
-            out_path = Path(default_path).with_name(
-                f"{Path(default_path).stem}{suffix}{Path(default_path).suffix}"
-            )
-            filtered_img.save(out_path)
-            print(f"✅ Saved: {out_path}")
-
-        print("\n✅ All filters applied successfully.")
-
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    try:
-        test_filters_interactive()
-    except tk.TclError:
-        # In case running on a headless system (no display)
-        print("⚠️ GUI not available, running terminal test instead.")
-        test_filters_terminal()
+    st.download_button(
+        label="📥 Download processed image",
+        data=byte_data,
+        file_name="processed_image.png",
+        mime="image/png",
+    )
