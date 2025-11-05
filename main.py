@@ -8,7 +8,7 @@ from filters import (
     pick_image_file,
     pick_output_folder,
 )
-from grids import compute_axis, draw_grid
+from grids import draw_grid, GridStart
 import tkinter as tk
 
 
@@ -51,19 +51,16 @@ def test_filters_interactive():
 
         print("\n✅ All actions performed successfully.")
 
-        ### -------- Test grids
-
-        # center_x, center_y = compute_axis(img)
-        # print(f"Axis at center: ({center_x}, {center_y})")
+        ## -------- Test grids
 
         print(f"Creating grid...")
         transformed_img = draw_grid(
-            img, start="center", cols=4, rows=4, line_color=(255, 0, 0), line_width=2
+            img, GridStart.CENTER, cols=3, rows=5, line_color=(255, 0, 0), line_width=2
         )
         show_image(transformed_img, title="Grid")
         out_path = (
             output_folder
-            # / f"{Path(image_path).stem}{suffix}{Path(image_path).suffix}"
+            # / f"{Path(image_path).stem}{suffix}{Path(image_path).suffix}" ## with !!
             / f"{Path(image_path).stem}_grid{Path(image_path).suffix}"
         )
         transformed_img.save(out_path)
