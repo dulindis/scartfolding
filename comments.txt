@@ -1,4 +1,0 @@
-### sepia, black and white
-### croping to ratio, moving the frame
-### streghtening contrast
-### grid and offset from middle

@@ -1,0 +1,6 @@
+pillow
+numpy
+streamlit
+streamlit-image-comparison
+opencv-python
+pytest
