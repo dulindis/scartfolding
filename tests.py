@@ -1,7 +1,6 @@
 import pytest
-
-# from pathlib import Path
 from PIL import Image
+
 from filters import (
     load_image,
     apply_black_and_white,
@@ -12,6 +11,8 @@ from grids import (
     draw_grid,
     GridStart,
 )
+
+### ------ Tests
 
 
 TEST_IMAGE = "./images/input/landscape.jpg"
