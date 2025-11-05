@@ -1,9 +1,4 @@
 from PIL import Image
-
-# , ImageTk
-# from pathlib import Path
-# import tkinter as tk
-# from tkinter import filedialog
 import numpy as np
 from enum import Enum
 
