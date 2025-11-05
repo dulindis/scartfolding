@@ -1,8 +1,9 @@
 from io import BytesIO
-from PIL import Image, ImageTk
+from PIL import Image
 from pathlib import Path
 
 ### ------ Utility Functions
+
 
 # Load Image - returns PIL img
 def load_image(source):
