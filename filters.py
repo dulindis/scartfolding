@@ -3,6 +3,7 @@ import numpy as np
 from enum import Enum
 
 from utils import load_image
+
 # , image_to_bytes
 
 
@@ -57,7 +58,9 @@ def adjust_contrast(img, scale=0.0):
 
 
 # Apply a filter based on the Filters enum
-def apply_filter(img, filter_type: Filters, intensity: float = 1.0):
+def apply_filter(img, filter_type: Filters | None = None, intensity: float = 1.0):
+    if filter_type is None:
+        return img.copy()
     if filter_type == Filters.BW:
         return apply_black_and_white(img)
     elif filter_type == Filters.SEPIA:
