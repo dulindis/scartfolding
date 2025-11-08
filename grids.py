@@ -36,14 +36,18 @@ def compute_grid_positions(
 
     if start == GridStart.CENTER:
         x_center, y_center = width / 2, height / 2
-        for i in range(-(cols // 2), (cols // 2) + 1):
-            x = x_center + i * col_spacing
-            if 0 <= x <= width:
-                x_positions.append(x)
-        for j in range(-(rows // 2), (rows // 2) + 1):
-            y = y_center + j * row_spacing
-            if 0 <= y <= height:
-                y_positions.append(y)
+
+        if cols > 1:
+            for i in range(-(cols // 2), (cols // 2) + 1):
+                x = x_center + i * col_spacing
+                if 0 <= x <= width:
+                    x_positions.append(x)
+
+        if rows > 1:
+            for j in range(-(rows // 2), (rows // 2) + 1):
+                y = y_center + j * row_spacing
+                if 0 <= y <= height:
+                    y_positions.append(y)
 
     elif start == GridStart.LEFT:
         x_positions = [i * col_spacing for i in range(1, cols)]
@@ -72,10 +76,14 @@ def draw_grid(
     draw_frame: bool = True,
 ) -> Image.Image:
 
+    # if rows <= 1 and cols <= 1:
+    #     return img.copy()
+
     if img.mode != "RGB":
         img_copy = img.convert("RGB")
     else:
         img_copy = img.copy()
+
     draw = ImageDraw.Draw(img_copy)
     width, height = img.size
 
