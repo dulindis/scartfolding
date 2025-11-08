@@ -81,13 +81,18 @@ if uploaded:
     )
 
     byte_data = image_to_bytes(processed_img, format="PNG")
-    filename = (
-        f"processed_{selected_ratio.name.lower() if selected_ratio else 'original'}.png"
-    )
+
+    st.subheader("💾 Download processed image")
 
     st.download_button(
-        label=f"📥 Download processed image ({selected_ratio.name if selected_ratio else 'No ratio'})",
+        label=f"📥 Download - PNG",
         data=byte_data,
         file_name="processed_image.png",
         mime="image/png",
+    )
+    st.download_button(
+        label=f"📥 Download - JPG",
+        data=byte_data,
+        file_name="processed_image.jpg",
+        mime="image/jpg",
     )
