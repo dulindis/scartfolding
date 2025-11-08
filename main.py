@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit_image_comparison import image_comparison
 
-from crop import crop_to_ratio, Ratios
+from ratios import crop_to_ratio, Ratios
 from grids import draw_grid, GridStart
 from filters import apply_filter, Filters, load_image
 from utils import load_image, image_to_bytes
