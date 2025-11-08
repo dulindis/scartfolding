@@ -6,13 +6,15 @@ from PIL import Image
 
 class Ratios(Enum):
     SQUARE = (1, 1)
-    STANDARD_PHOTO = (2, 3)
+    STANDARD_PHOTO_VERTICAL = (2, 3)
+    STANDARD_PHOTO_HORIZONTAL = (3, 2)
     WIDESCREEN = (16, 9)
     CINEMATIC = (21, 9)
     CLASSIC_TV = (4, 3)
     PORTRAIT = (4, 5)
     MEDIUM_FORMAT = (3, 2)
     STORY_VERTICAL = (9, 16)
+    STORY_HORIZONTAL = (9, 16)
 
 
 def crop_to_ratio(
