@@ -21,37 +21,32 @@ if uploaded:
     # Ratio crop options
     st.subheader("✂️ Ratio Crop Options")
 
-    ratio_choices = ["None"] + [r.name for r in Ratios]
+    ratio_choices = [None] + list(Ratios)
     ratio_option = st.selectbox(
         "Choose a ratio variant",
         ratio_choices,
         index=0,
+        format_func=lambda r: "None" if r is None else r.name,
     )
-    selected_ratio = None if ratio_option == "None" else Ratios[ratio_option]
+    selected_ratio = ratio_option
 
     ratio_changed = selected_ratio != st.session_state.last_ratio
     st.session_state.last_ratio = selected_ratio
-
-    # selected_ratio = next((r for r in Ratios if r.value == ratio_option), None)
 
     cropped_img = crop_to_ratio(img, selected_ratio)
 
     # Filter selection
     st.subheader("🎨 Filters")
 
-    filter_choices = ["None"] + [f.value for f in Filters]
+    filter_choices = [None] + list(Filters)
     filter_option = st.selectbox(
         "Choose a filter",
         filter_choices,
         index=0,
+        format_func=lambda f: "None" if f is None else f.value,
     )
 
-    # selected_filter = next((f for f in Filters if f.value == filter_option), None)
-    selected_filter = (
-        None
-        if filter_option == "None"
-        else next(f for f in Filters if f.value == filter_option)
-    )
+    selected_filter = filter_option
 
     intensity = 0.8
     if selected_filter == Filters.SEPIA:
