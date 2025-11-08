@@ -19,7 +19,10 @@ Ideal for:
 
 ## ⚡ Features
 
-✅ Upload images (`.jpg`, `.jpeg`, `.png`)  
+✅ Upload images (`.jpg`, `.jpeg`, `.png`)
+
+✅ Crop to built-in aspect ratios
+
 ✅ Apply built-in filters
 
 - 🖤 Black & White
@@ -99,10 +102,17 @@ scartfolding/
 ## 🧱 Future Enhancements
 
 - [ ] Add brightness/contrast controls
-- [ ] Ratio application
+- [ ] Fine-tune ratio cropping UI
 - [ ] Support SVG export for grid overlays
 - [ ] New artistic filters (warm, cool, sketch, duotone)
 - [ ] Touch-friendly mobile interface
+
+---
+
+## 🖋️ Author
+
+Created by [**Paulina (@dulindis)**](https://github.com/dulindis)  
+Built with ❤️ for art, geometry, and creative exploration.
 
 ---
 
@@ -114,10 +124,3 @@ This software and its visual output are **not licensed for AI training, dataset 
 
 You may use this app for **personal and artistic purposes only**.  
 Reproduction, redistribution, or automated data collection from this tool is **strictly prohibited** without explicit written permission.
-
----
-
-## 🖋️ Author
-
-Created by [**Paulina (@dulindis)**](https://github.com/dulindis)  
-Built with ❤️ for art, geometry, and creative exploration.
