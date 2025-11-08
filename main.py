@@ -82,16 +82,16 @@ if uploaded:
 
     byte_data = image_to_bytes(processed_img, format="PNG")
 
-    st.subheader("💾 Download processed image")
+    st.subheader("📥 Download processed image")
 
     st.download_button(
-        label=f"📥 Download - PNG",
+        label=f"Download - PNG",
         data=byte_data,
         file_name="processed_image.png",
         mime="image/png",
     )
     st.download_button(
-        label=f"📥 Download - JPG",
+        label=f"Download - JPG",
         data=byte_data,
         file_name="processed_image.jpg",
         mime="image/jpg",
