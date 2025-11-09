@@ -1,10 +1,9 @@
 import streamlit as st
 from streamlit_image_comparison import image_comparison
-
 from ratios import crop_to_ratio, Ratios
 from grids import draw_grid, GridStart
-from filters import apply_filter, Filters, load_image
-from utils import load_image, image_to_bytes
+from filters import apply_filter, Filters
+from utils import image_to_bytes, load_image
 
 
 st.title("🖼️ Image Prep App - scARTfolding")

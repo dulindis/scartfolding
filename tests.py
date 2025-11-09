@@ -1,8 +1,8 @@
 import pytest
-from PIL import Image
+import cv2
+import numpy as np
 
 from filters import (
-    load_image,
     apply_black_and_white,
     apply_sepia,
 )
@@ -11,6 +11,8 @@ from grids import (
     draw_grid,
     GridStart,
 )
+from utils import load_image
+
 
 ### ------ Tests
 
@@ -22,23 +24,34 @@ OUTPUT_DIR = "./images/output/test"
 @pytest.fixture
 def img():
     image = load_image(TEST_IMAGE)
-    cropped = image.crop((0, 0, 100, 50))
+    cropped = image[0:50, 0:100]
     yield cropped
-    image.close()
+
+
+# Test load image shape
+def test_load_image_shape(img):
+    assert isinstance(img, np.ndarray)
+    assert img.shape[0] == 50  # height
+    assert img.shape[1] == 100  # width
+    assert img.shape[-1] in (3, 4)
 
 
 # Test black & white filter
 def test_black_and_white(img):
     bw_img = apply_black_and_white(img)
-    assert isinstance(bw_img, Image.Image)
-    assert bw_img.mode in ["RGB", "L"]
+    assert isinstance(bw_img, np.ndarray)
+    assert bw_img.ndim == 2
+    assert bw_img.dtype == np.uint8
 
 
 # Test sepia filter
 def test_sepia(img):
     sepia_img = apply_sepia(img)
-    assert isinstance(sepia_img, Image.Image)
-    assert sepia_img.mode == "RGB"
+    assert isinstance(sepia_img, np.ndarray)
+    assert sepia_img.ndim == 3, "Sepia image should have 3 dimensions (H, W, C)"
+    assert sepia_img.shape[-1] == 3, "Sepia image must have 3 color channels"
+    assert sepia_img.dtype == np.float32
+    # assert sepia_img.dtype == np.uint8
 
 
 # --- Position computation ---
@@ -109,13 +122,13 @@ def test_compute_grid_positions_custom_spacing():
 
 # --- Grid drawing ---
 def test_draw_grid_basic(img):
-    # ✅ use the Enum instead of string
     img_with_grid = draw_grid(img, rows=2, cols=2, start=GridStart.CENTER)
-    assert isinstance(img_with_grid, Image.Image)
-    assert img != img_with_grid
+    assert isinstance(img_with_grid, np.ndarray)
+    assert img_with_grid.shape == img.shape
 
-    # Sanity check: pixel in the middle should exist and be RGB
-    width, height = img_with_grid.size
-    pixel = img_with_grid.getpixel((width // 2, height // 2))
-    assert isinstance(pixel, tuple)
-    assert len(pixel) == 3
+    h, w = img_with_grid.shape[:2]
+    pixel = img_with_grid[h // 2, w // 2]
+    assert isinstance(pixel, np.ndarray)
+    assert pixel.ndim == 1
+    assert len(pixel) in (3, 4)
+    assert np.all((pixel >= 0) & (pixel <= 255))
