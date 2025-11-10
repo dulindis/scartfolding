@@ -4,8 +4,9 @@ from streamlit_image_comparison import image_comparison
 from ratios import crop_to_ratio, Ratios
 from grids import draw_grid, GridStart
 from filters import apply_filter, Filters
-from utils import load_image, image_to_bytes
-
+from utils import load_image, image_to_bytes, preprocess_image, to_uint8_rgb
+import numpy as np
+from posterify import posterify
 
 st.title("🖼️ Image Prep App - scARTfolding")
 
@@ -35,6 +36,11 @@ if uploaded:
 
     cropped_img = crop_to_ratio(img, selected_ratio)
 
+    # for further processing
+    img_working = preprocess_image(
+        cropped_img, target_dtype=np.float32, normalize=False
+    )
+
     # Filter selection
     st.subheader("🎨 Filters")
 
@@ -52,25 +58,38 @@ if uploaded:
     if selected_filter == Filters.SEPIA:
         intensity = st.slider("Sepia intensity", 0.0, 1.0, 0.8, 0.1)
 
-    filtered_img = apply_filter(cropped_img, selected_filter, intensity=intensity)
+    filtered_img = apply_filter(img_working, selected_filter, intensity=intensity)
+    #     filtered_img = apply_filter(
+    #     crop_to_ratio(img_working, selected_ratio), selected_filter, intensity=intensity
+    # )
 
     # Posterify options
     st.subheader("🖼️ Posterify Options")
 
     k = st.slider("Number of color levels (k)", 2, 20, 5, 1)
-    if st.button("Apply Posterify"):
+
+    apply_posterify = st.checkbox("Apply Posterify")
+
+    if apply_posterify:
         from posterify import posterify
 
         processed_img = posterify(filtered_img, k=k)
     else:
         processed_img = filtered_img
+    # processed_img = posterify(filtered_img, k=k)
+    # if st.button("Apply Posterify"):
+    #     from posterify import posterify
 
-    st.subheader("Posterifyed Image")
+    #     processed_img = posterify(filtered_img, k=k)
+    # else:
+    #     processed_img = filtered_img
 
-    st.image(
-        processed_img,
-        width=800,
-    )
+    # st.subheader("Posterifyed Image")
+
+    # st.image(
+    #     to_uint8_rgb(processed_img),
+    #     width=800,
+    # )
 
     # Grid options
     st.subheader("📐 Grid Overlay")
@@ -83,16 +102,33 @@ if uploaded:
 
     # TODO: create a pipeline for modifications
     # Apply grid
-    processed_img = draw_grid(filtered_img, start=start_enum, rows=rows, cols=cols)
+    # processed_img = draw_grid(filtered_img, start=start_enum, rows=rows, cols=cols)
+    # processed_img = draw_grid(filtered_img, start=start_enum, rows=rows, cols=cols)
+    processed_img = draw_grid(processed_img, start=start_enum, rows=rows, cols=cols)
 
     st.subheader("🔍 Before vs After")
+
+    preview_cropped = to_uint8_rgb(cropped_img)  # always shows the initial ratio crop
+    processed_preview = to_uint8_rgb(processed_img)  # final processed image
+
+    # preview_cropped = preprocess_image(cropped_img, target_dtype=np.uint8)
+
+    # image_comparison(
+    #     img1=cropped_img,
+    #     img2=processed_img,
+    #     label1=f"Original",
+    #     label2=f"Processed",
+    #     width=800,
+    # )
+
     image_comparison(
-        img1=cropped_img,
-        img2=processed_img,
-        label1=f"Original",
-        label2=f"Processed",
+        img1=preview_cropped,
+        img2=processed_preview,
+        label1="Original",
+        label2="Processed",
         width=800,
     )
+    # st.image(processed_preview, width=800)
 
     byte_data = image_to_bytes(processed_img, format="PNG")
 

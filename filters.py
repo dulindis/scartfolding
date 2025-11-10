@@ -13,7 +13,8 @@ class Filters(Enum):
 # Convert image to black and white - returns np array
 def apply_black_and_white(img: np.ndarray) -> np.ndarray:
     img_copy = img.copy()
-    img_preprocess = preprocess_image(img_copy, np.float32, normalize=True)
+    img_preprocess = img_copy
+    # img_preprocess = preprocess_image(img_copy, np.float32, normalize=True)
 
     if img_preprocess.shape[-1] == 4:
         img_rgb = img_preprocess[:, :, :3]
@@ -28,7 +29,8 @@ def apply_black_and_white(img: np.ndarray) -> np.ndarray:
 # Convert image to sepia - returns np array
 def apply_sepia(img, intensity=1.0) -> np.ndarray:
     img_copy = img.copy()
-    img_preprocess = preprocess_image(img_copy, np.float32, normalize=True)
+    img_preprocess = img_copy
+    # img_preprocess = preprocess_image(img_copy, np.float32, normalize=True)
 
     if img_preprocess.shape[-1] == 4:
         rgb = img_preprocess[..., :3]
@@ -53,7 +55,8 @@ def apply_sepia(img, intensity=1.0) -> np.ndarray:
 def adjust_contrast(img: np.ndarray, scale=0.0) -> np.ndarray:
 
     img_copy = img.copy()
-    img_preprocess = preprocess_image(img_copy, np.float32, normalize=True)
+    img_preprocess = img_copy
+    # img_preprocess = preprocess_image(img_copy, np.float32, normalize=True)
 
     factor = 1.0 + scale
     midpoint = 127.5
@@ -84,8 +87,10 @@ def adjust_contrast(img: np.ndarray, scale=0.0) -> np.ndarray:
 def apply_filter(
     img: np.ndarray, filter_type: Filters | None = None, intensity: float = 1.0
 ):
+    # if filter_type is None:
+    #     return preprocess_image(img, np.uint8)
     if filter_type is None:
-        return preprocess_image(img, np.uint8)
+        return img.copy()
 
     filters = {
         Filters.BW: apply_black_and_white,
@@ -96,4 +101,5 @@ def apply_filter(
         raise ValueError(f"Unsupported filter: {filter_type}")
 
     img_filtered = filters[filter_type](img)
-    return preprocess_image(img_filtered, np.uint8)
+    return img_filtered
+    # return preprocess_image(img_filtered, np.uint8)
