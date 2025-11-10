@@ -1,6 +1,8 @@
-from PIL import Image, ImageDraw
 from typing import Tuple, Optional
 from enum import Enum
+import numpy as np
+import cv2
+
 
 ### ------ Grids
 
@@ -63,9 +65,9 @@ def compute_grid_positions(
     return x_positions, y_positions
 
 
-# Draws grid over an image  -returns new PIL
+# Draws grid over an image  -returns np array
 def draw_grid(
-    img: Image.Image,
+    img: np.ndarray,
     start: GridStart = GridStart.CENTER,
     rows: Optional[int] = 3,
     cols: Optional[int] = 3,
@@ -74,18 +76,10 @@ def draw_grid(
     line_color: Tuple[int, int, int] = (255, 0, 0),
     line_width: int = 2,
     draw_frame: bool = True,
-) -> Image.Image:
+) -> np.ndarray:
 
-    # if rows <= 1 and cols <= 1:
-    #     return img.copy()
-
-    if img.mode != "RGB":
-        img_copy = img.convert("RGB")
-    else:
-        img_copy = img.copy()
-
-    draw = ImageDraw.Draw(img_copy)
-    width, height = img.size
+    img_copy = img.copy()
+    height, width = img_copy.shape[:2]
 
     # Calculate line positions
     x_positions, y_positions = compute_grid_positions(
@@ -94,14 +88,30 @@ def draw_grid(
 
     # Draw vertical and horizontal grid lines
     for x in x_positions:
-        draw.line([(x, 0), (x, height)], fill=line_color, width=line_width)
+        cv2.line(
+            img_copy,
+            (int(round(x)), 0),
+            (int(round(x)), height),
+            color=line_color,
+            thickness=line_width,
+        )
     for y in y_positions:
-        draw.line([(0, y), (width, y)], fill=line_color, width=line_width)
+        cv2.line(
+            img_copy,
+            (0, int(round(y))),
+            (width, int(round(y))),
+            color=line_color,
+            thickness=line_width,
+        )
 
     # Optional frame
     if draw_frame:
-        draw.rectangle(
-            [(0, 0), (width - 1, height - 1)], outline=line_color, width=line_width
+        cv2.rectangle(
+            img_copy,
+            (0, 0),
+            (width - 1, height - 1),
+            color=line_color,
+            thickness=line_width,
         )
 
     return img_copy

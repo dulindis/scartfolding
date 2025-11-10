@@ -3,7 +3,7 @@ from streamlit_image_comparison import image_comparison
 
 from ratios import crop_to_ratio, Ratios
 from grids import draw_grid, GridStart
-from filters import apply_filter, Filters, load_image
+from filters import apply_filter, Filters
 from utils import load_image, image_to_bytes
 
 
@@ -54,6 +54,24 @@ if uploaded:
 
     filtered_img = apply_filter(cropped_img, selected_filter, intensity=intensity)
 
+    # Posterify options
+    st.subheader("🖼️ Posterify Options")
+
+    k = st.slider("Number of color levels (k)", 2, 20, 5, 1)
+    if st.button("Apply Posterify"):
+        from posterify import posterify
+
+        processed_img = posterify(filtered_img, k=k)
+    else:
+        processed_img = filtered_img
+
+    st.subheader("Posterifyed Image")
+
+    st.image(
+        processed_img,
+        width=800,
+    )
+
     # Grid options
     st.subheader("📐 Grid Overlay")
 
@@ -63,6 +81,7 @@ if uploaded:
     rows = st.slider("Rows", 1, 10, 3)
     cols = st.slider("Cols", 1, 10, 3)
 
+    # TODO: create a pipeline for modifications
     # Apply grid
     processed_img = draw_grid(filtered_img, start=start_enum, rows=rows, cols=cols)
 

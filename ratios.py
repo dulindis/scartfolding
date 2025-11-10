@@ -1,5 +1,6 @@
 from enum import Enum
-from PIL import Image
+import numpy as np
+
 
 # Various ratio cropping
 
@@ -18,9 +19,10 @@ class Ratios(Enum):
 
 
 def crop_to_ratio(
-    img: Image, ratio: Ratios | None = None, center: bool = True
-) -> Image.Image:
-    width, height = img.size
+    img: np.ndarray, ratio: Ratios | None = None, center: bool = True
+) -> np.ndarray:
+
+    height, width = img.shape[:2]
     current_ratio = width / height
 
     if ratio is None:
@@ -38,25 +40,19 @@ def crop_to_ratio(
         new_width = int(round(height * target_ratio))
     elif current_ratio < target_ratio:
         new_width = width
-        new_height = int(round(width * target_ratio))
+        new_height = int(round(width / target_ratio))
+
     else:
         return img.copy()
 
     if center:
         left = int(round((width - new_width) / 2))
-        upper = int(round((height - new_height) / 2))
+        top = int(round((height - new_height) / 2))
     else:
-        left, upper = 0, 0
+        left, top = 0, 0
 
     right = left + new_width
-    lower = upper + new_height
+    bottom = top + new_height
 
-    left = max(left, 0)
-    upper = max(upper, 0)
-    right = min(right, width)
-    lower = min(lower, height)
-
-    box = (left, upper, right, lower)
-    cropped_img = img.crop(box)
-
+    cropped_img = img[top:bottom, left:right].copy()
     return cropped_img

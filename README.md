@@ -106,6 +106,8 @@ scartfolding/
 - [ ] Support SVG export for grid overlays
 - [ ] New artistic filters (warm, cool, sketch, duotone)
 - [ ] Touch-friendly mobile interface
+- [ ] Variantify - AI powered variants to give you creative spark and unleash tweaking.
+- [ ] Posterify - AI powered variants to give you creative spark and unleash tweaking.
 
 ---
 
